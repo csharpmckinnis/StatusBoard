@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Digital Display</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Innovation Lab</h1>
+        <img src="{{ url_for('static', filename='dept_logo.png') }}" alt="Department Logo" class="logo">
+    </header>
+    <div class="cards">
+        {% for member in team_info %}
+        <div class="card">
+            <div class="card-image">
+                <img src="{{ member.profile_image }}" alt="Profile Picture" class="profile-pic">
+            </div>
+            <div class="card-info">
+                <h1><strong>{{ member.name }}</strong></h1>
+                <p>{{ member.title }}</p>
+                <p><strong>Location:</strong> {{ member.location }}</p>
+                <p> {{ member.status }} </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+<script>
+    function fetchData() {
+        fetch('/')
+            .then(response => response.text())
+            .then(html => {
+                const doc = new DOMParser().parseFromString(html, "text/html");
+                document.querySelector('.cards').innerHTML = doc.querySelector('.cards').innerHTML;
+            });
+    }
+
+    setInterval(fetchData, 10000);  // Fetch every 10 seconds
+</script>
+
+</html>

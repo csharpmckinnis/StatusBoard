@@ -1,0 +1,77 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #292929; /* Dark background for better contrast */
+    color: #ffffff; /* White text for readability */
+    margin: 0;
+    padding: 10px;
+}
+
+header {
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black for header */
+    color: #476ed0; /* Bright accent color */
+    text-align: center;
+    padding: 20px;
+    position: relative; /* Needed for logo positioning */
+}
+
+.logo {
+    position: absolute; /* Position logo within the header */
+    top: 10px; /* Space from top */
+    right: 20px; /* Space from right */
+    width: 100px; /* Fixed width for consistency */
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 0;
+}
+
+.card {
+    background-color: #1e1e1e; /* Slightly lighter than the body for contrast */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3); /* Subtle shadow for depth */
+    margin: 10px;
+    padding: 20px;
+    width: calc(100% - 40px); /* Full width adjusted for padding */
+    border-radius: 10px;
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
+}
+
+.card-image {
+    flex: 0 0 100px; /* Fixed width for images */
+    padding: 10px;
+    text-align: center; /* Center the profile image */
+}
+
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%; /* Circular profile images */
+}
+
+.card-info {
+    flex-grow: 1; /* Takes remaining space */
+    padding-left: 20px; /* Space between image and text */
+}
+
+.card-info h2, .card-info p {
+    margin: 5px 0;
+}
+
+.card-info p {
+    color: #cccccc; /* Light grey for less important information */
+}
+
+@media (min-width: 600px) {
+    .card {
+        width: calc(50% - 40px); /* Adjust to two columns on wider screens */
+    }
+}
+
+@media (min-width: 1000px) {
+    .card {
+        width: calc(33.333% - 40px); /* Adjust to three columns on even wider screens */
+    }
+}
