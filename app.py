@@ -1,30 +1,45 @@
 from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
 
-# Initialize with default data
-current_data = [
-    {'name': 'Alice', 'location': 'Office', 'status': 'Working', 'status_emoji': ''},
-    {'name': 'Bob', 'location': 'Remote', 'status': 'Available', 'status_emoji': ''},
-    {'name': 'Charlie', 'location': 'Meeting Room 5', 'status': 'In a meeting', 'status_emoji': ''}
-    ]
+# Dummy data - initial
+people = [
+    {'name': 'Alice', 'location': 'Office', 'status': 'Working', 'status_emoji': '🏢', 'profile_image': '/static/profile_placeholder.png'},
+    {'name': 'Bob', 'location': 'Remote', 'status': 'Available', 'status_emoji': '🏠', 'profile_image': '/static/profile_placeholder.png'},
+    {'name': 'Charlie', 'location': 'Meeting Room 5', 'status': 'In a meeting', 'status_emoji': '📅', 'profile_image': '/static/profile_placeholder.png'},
+    {'name': 'Dana', 'location': 'Out of Office', 'status': 'Out of Office', 'status_emoji': '🏠', 'profile_image': '/static/profile_placeholder.png'}
+]
+
+announcements = [""]  # Use an equals sign to initialize the list
 
 @app.route('/')
-def home():
-    # Pass the current data to the template
-    return render_template('display.html', team_info=current_data)
+def status_board():
+    global people, announcements  # Include both people and announcements
+    return render_template('display.html', people=people, announcements=announcements)
 
 @app.route('/update', methods=['POST'])
-def update_display():
-    global current_data  # Refer to the global variable
-    data = request.json
-    print("Received data:", data)  # Debug print to check what data is received
-
-    # Assuming the incoming data is structured as a list of dicts like the initial data
-    current_data = data  # Replace the current data with the new data
-    return jsonify({"success": True, "message": "Display updated successfully."})
-
+def update_status():
+    global people
+    people = request.json
+    return jsonify({"status": "success"}), 200
+    
+@app.route('/data', methods=['GET'])
+def get_data():
+    global people
+    return jsonify(people)
+    
+@app.route('/announce', methods=['POST'])
+def announce():
+    global announcements
+    announcement = request.json.get('announcement')
+    if announcement:
+        announcements[0]=announcement
+    return jsonify({"status": "success"}), 200
+    
+@app.route('/announcements', methods=['GET'])
+def get_announcements():
+    global announcements
+    return jsonify(announcements)
+    
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080)
+    app.run(host='0.0.0.0', port=8080, debug=True)
