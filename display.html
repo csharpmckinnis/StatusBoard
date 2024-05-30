@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Board</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        async function fetchData() {
+            const response = await fetch('/data');
+            const data = await response.json();
+            updateDisplay(data);
+        }
+        
+        async function fetchAnnouncements() {
+            const response = await fetch('/announcements');
+            const data = await response.json();
+            updateAnnouncements(data);
+        }
+
+        function updateDisplay(data) {
+            const bottomSection = document.querySelector('.bottom-section');
+            bottomSection.innerHTML = '';
+
+            data.forEach(person => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                const profilePic = document.createElement('div');
+                profilePic.className = 'profile-pic';
+                const img = document.createElement('img');
+                img.src = person.profile_image;
+                img.alt = 'Profile Pic';
+                profilePic.appendChild(img);
+
+                const profileInfo = document.createElement('div');
+                profileInfo.className = 'profile-info';
+                const name = document.createElement('div');
+                name.className = 'name';
+                name.textContent = person.name;
+                const title = document.createElement('div');
+                title.className = 'title';
+                title.textContent = person.title;
+                const status = document.createElement('div');
+                status.className = 'status';
+                status.textContent = person.status;
+
+                profileInfo.appendChild(name);
+                profileInfo.appendChild(title);
+                profileInfo.appendChild(status);
+
+                card.appendChild(profilePic);
+                card.appendChild(profileInfo);
+
+                bottomSection.appendChild(card);
+            });
+        }
+        
+        function updateAnnouncements(data) {
+            const announcementSection = document.querySelector('.announcement-section');
+            announcementSection.innerHTML = '';
+
+            data.forEach(announcement => {
+                const announcementDiv = document.createElement('div');
+                announcementDiv.className = 'announcement';
+                announcementDiv.textContent = announcement;
+
+                announcementSection.appendChild(announcementDiv);
+            });
+        }
+
+        function updateClock() {
+            const clockElement = document.querySelector('.clock');
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+
+            // Convert 24-hour time to 12-hour time
+            hours = hours % 12;
+            hours = hours ? hours : 12; // If hours is 0, set it to 12
+            hours = String(hours).padStart(2, '0');
+
+            clockElement.textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+        }
+
+        setInterval(fetchData, 60000); // Fetch data every 60 seconds
+        setInterval(fetchAnnouncements, 60000); // Fetch announcements every 60 seconds
+        setInterval(updateClock, 1000); // Update clock every second
+        window.onload = () => {
+            fetchData(); // Fetch data on page load
+            fetchAnnouncements();
+            updateClock(); // Update clock on page load
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="top-section">
+            <div class="header">
+                <div class="title">Welcome to the Innovation Lab</div>
+                <div class="clock">--:--:--</div>
+            </div>
+            <div class="announcement-section">
+                {% for announcement in announcements %}
+                <div class="announcement">{{ announcement }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="bottom-section">
+            {% for person in people %}
+            <div class="card">
+                <div class="profile-pic">
+                    <img src="{{ person.profile_image }}" alt="Profile Pic">
+                </div>
+                <div class="profile-info">
+                    <div class="name">{{ person.name }}</div>
+                    <div class="title">{{ person.title }}</div>
+                    <div class="status">{{ person.status }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
